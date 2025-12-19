@@ -1,0 +1,29 @@
+name: CI / Build / Test / Preview
+on:
+  pull_requests:
+    types: [opened, synchronize, reopened]
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+jobs:
+  deploy-preview:
+    needs: build-test
+    runs-on: ubuntu-latest
+    environment: preview
+    steps:
+      - name: Checkout PR code again
+        uses: actions/checkout@v4
+      - name: Deploy preview environment
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          ./scripts/deploy-preview.sh --arg1 --arg2
+        uses: test
+      - name: Checkout PR code again
+        uses: actions/checkout
+    deploy-preview1:
+        needs: build-test
+        runs-on: ubuntu-latest
